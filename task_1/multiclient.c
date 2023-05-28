@@ -8,6 +8,12 @@
 
 int main(int argc, char **argv) 
 {
+	struct timeval start;
+	struct timeval end;
+	unsigned long e_usec;
+
+	gettimeofday(&start, 0);
+
 	pid_t pids[MAX_CLIENT];
 	int runprocess = 0, status, i;
 
@@ -40,12 +46,12 @@ int main(int argc, char **argv)
 			srand((unsigned int) getpid());
 
 			for(i=0;i<ORDER_PER_CLIENT;i++){
-				int option = rand() % 3;
+				int option = rand() % 2;
 				
-				if(option == 0){//show
-					strcpy(buf, "show\n");
-				}
-				else if(option == 1){//buy
+				// if(option == 0){//show
+				// 	strcpy(buf, "show\n");
+				// }
+				else if(option == 0){//buy
 					int list_num = rand() % STOCK_NUM + 1;
 					int num_to_buy = rand() % BUY_SELL_MAX + 1;//1~10
 
@@ -57,7 +63,7 @@ int main(int argc, char **argv)
 					strcat(buf, tmp);
 					strcat(buf, "\n");
 				}
-				else if(option == 2){//sell
+				else if(option == 1){//sell
 					int list_num = rand() % STOCK_NUM + 1; 
 					int num_to_sell = rand() % BUY_SELL_MAX + 1;//1~10
 					
@@ -106,6 +112,12 @@ int main(int argc, char **argv)
 
 	Close(clientfd); //line:netp:echoclient:close
 	exit(0);*/
+
+	gettimeofday(&end, 0);
+
+	e_usec = ((end.tv_sec * 1000000) + end.tv_usec) - ((start.tv_sec * 1000000) + start.tv_usec);
+
+	printf("elapsed time : %lu microseconds\n", e_usec);
 
 	return 0;
 }
