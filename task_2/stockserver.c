@@ -112,7 +112,7 @@ void echo_cnt(int connfd)
 			int idx = 0;
 			char showbuf[MAXBUF];
 			show_tree(node, showbuf, &idx);
-			Rio_writen(connfd, showbuf, strlen(showbuf));
+			Rio_writen(connfd, showbuf, MAXBUF);
 		}
 		else if (!strcmp(command, "buy")) {
 			int ID = atoi(strtok(NULL, " \n"));
@@ -132,13 +132,10 @@ void echo_cnt(int connfd)
 				if (node->readcnt == 0)
 					V(&node->mutex_write);
 				V(&node->mutex_readcnt);
-				strcpy(buf, "[buy] success\n");
-				Rio_writen(connfd, buf, strlen(buf));
+				Rio_writen(connfd, "[buy] success\n", MAXBUF);
 			}
-			else {
-				strcpy(buf, "Not enough left stocks\n");
-				Rio_writen(connfd, buf, strlen(buf));
-			}
+			else
+				Rio_writen(connfd, "Not enough left stocks\n", MAXBUF);
 		}
 		else if (!strcmp(command, "sell")) {
 			int ID = atoi(strtok(NULL, " \n"));
@@ -156,14 +153,14 @@ void echo_cnt(int connfd)
 			if (node->readcnt == 0)
 				V(&node->mutex_write);
 			V(&node->mutex_readcnt);
-			strcpy(buf, "[sell] success\n");
-			Rio_writen(connfd, buf, strlen(buf));
+			Rio_writen(connfd, "[sell] success\n", MAXBUF);
 		}
 		else if (!strcmp(command, "exit")) {
 			save_stock_table();
 			exit(0);
 		}
 	}
+	save_stock_table();
 }
 
 void save_stock_table() {

@@ -97,9 +97,9 @@ void add_client(int connfd, pool *p)
 void check_clients(pool *p)
 {
 	int i, connfd, n;
-	char buf[MAXLINE];
 	rio_t rio;
 	t_node *stock;
+	char buf[MAXLINE];
 
 	for (i = 0; (i <= p->maxi) && (p->nready > 0); i++) {
 		connfd = p->clientfd[i];
@@ -116,7 +116,7 @@ void check_clients(pool *p)
 					int idx = 0;
 					char showbuf[MAXBUF];
 					show_tree(node, showbuf, &idx);
-					Rio_writen(connfd, showbuf, MAXBUF);
+					Rio_writen(connfd, showbuf, MAXLINE);
 				}
 				else if (!strcmp(command, "buy")) {
 					int ID = atoi(strtok(NULL, " \n"));
@@ -124,20 +124,16 @@ void check_clients(pool *p)
 					int buy_cnt = atoi(strtok(NULL, " \n"));
 					if (stock->item.left_stock >= buy_cnt) {
 						stock->item.left_stock -= buy_cnt;
-						strcpy(buf, "[buy] success\n\0");
-						Rio_writen(connfd, buf, MAXBUF);
+						Rio_writen(connfd, "[buy] success\n", MAXBUF);
 					}
-					else {
-						strcpy(buf, "Not enough left stocks\n\0");
-						Rio_writen(connfd, buf, MAXBUF);
-					}
+					else
+						Rio_writen(connfd, "Not enough left stocks\n", MAXBUF);
 				}
 				else if (!strcmp(command, "sell")) {
 					int ID = atoi(strtok(NULL, " \n"));
 					stock = search(node, ID);
 					stock->item.left_stock += atoi(strtok(NULL, " \n"));
-					strcpy(buf, "[sell] success\n");
-					Rio_writen(connfd, buf, MAXBUF);
+					Rio_writen(connfd, "[sell] success\n", MAXBUF);
 				}
 				else if (!strcmp(command, "exit")) {
 					Close(connfd);

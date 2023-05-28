@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS=-O2 -Wall
-LDLIBS = -lpthread #-fsanitize=address
+LDLIBS = -lpthread
 
 all: multiclient stockclient stockserver
 
